@@ -1,4 +1,6 @@
 use rusty_time::timer::Timer;
+use std::time::Duration;
+use crate::frame::{Drawable, Frame};
 
 
 pub struct Shot {
@@ -24,12 +26,11 @@ impl Shot {
                 self.y -= 1;
             }
             self.timer.reset();
-
         }
     }
     pub fn explode(&mut self) {
         self.exploding = true;
-        self.timer = Timer::from_millis(250)
+        self.timer = Timer::from_millis(2000)
     }
     pub fn dead(&self) -> bool {
         (self.exploding && self.timer.ready) || (self.y == 0)

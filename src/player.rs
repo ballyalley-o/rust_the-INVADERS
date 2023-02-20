@@ -1,6 +1,10 @@
-use crate::{NUM_COLS, NUM_ROWS};
-use crate::frame::{Drawable, Frame};
-use crate::shot::Shot;
+use crate::{
+    frame::{Drawable, Frame},
+    shot::Shot,
+    NUM_COLS, NUM_ROWS,
+    invaders::{Invaders}
+};
+use std::time::Duration;
 
 
 
@@ -28,10 +32,40 @@ impl Player {
             self.x += 1;
         }
     }
+    pub fn shoot(&mut self) -> bool {
+        if self.shots.len() < 2 {
+            self.shots.push(Shot::new(self.x, self.y -1));
+            true
+        } else {
+            false
+        }
+    }
+    pub fn update(&mut self, delta: Duration) {
+        for shot in self.shots.iter_mut() {
+            shot.update(delta)
+        }
+        self.shots.retain(|shot| !shot.dead());
+    }
+    pub fn detect_hits(&mut self, invaders: &mut Invaders) -> u16 {
+        let mut hit_something = 0u16;
+        for shot in self.shots.iter_mut() {
+            if !shot.exploding {
+                let hit_count = invaders.kill_invader_at(shot.x, shot.y);
+                // if hit_count > 0 {
+                //     hit_something += hit_count;
+                //     shot.explode();
+                // }
+            }
+        }
+        hit_something
+    }
 }
 
 impl Drawable for Player {
     fn draw(&self, frame: &mut Frame) {
-        frame[self.x][self.y] = "△";
+        frame[self.x][self.y] = "🛸";
+        for shot in self.shots.iter() {
+            shot.draw(frame)
+        }
     }
 }
