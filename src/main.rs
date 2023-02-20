@@ -89,8 +89,7 @@ fn main() -> Result <(), Box<dyn Error>> {
         player.draw(&mut curr_frame);
         invaders.draw(&mut curr_frame);
 
-        let hits: u16 = player.detect_hits(&mut invaders);
-        if hits > 0 {
+        if player.detect_hits(&mut invaders) {
             audio.play("explode");
             // score.add_points(hits);
         }
